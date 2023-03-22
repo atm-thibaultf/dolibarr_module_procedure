@@ -1,0 +1,83 @@
+# Copyright (C) 2023 SuperAdmin <thibault.fiacre@atm-consulting.fr>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#
+# Generic
+#
+
+# Module label 'ModuleProcedureName'
+ModuleProcedureName = Procédure
+# Module description 'ModuleProcedureDesc'
+ModuleProcedureDesc = Module de gestion des procédures
+
+#
+# Admin page
+#
+ProcedureSetup = Configuration du module Procedure
+Settings = Paramètres
+ProcedureSetupPage = Configuration du module Procedure
+PROCEDURE_MYPARAM1 = My param 1
+PROCEDURE_MYPARAM1Tooltip = My param 1 tooltip
+PROCEDURE_MYPARAM2=My param 2
+PROCEDURE_MYPARAM2Tooltip=My param 2 tooltip
+
+
+#
+# About page
+#
+About = À propos
+ProcedureAbout = À propos du module Procédure
+ProcedureAboutPage = À propos du module Procédure
+
+#
+# Sample page
+#
+ProcedureArea = Accueil Procédure
+MyPageName = My page name
+ProcedureListTemplate = Liste des modèles
+ProcedureNewTemplate = Nouveau modèle
+
+#
+# Card
+#
+procedureTemplate=Modèle de procédure
+Label=Libellé
+ProcedureLabelTooltip=Nom de la procédure
+Description=Description
+Version=Version
+TriggerType=Type de déclenchement
+UserContactPoint=Contact référent
+GroupContactPoint=Groupe référent
+DateLastReview=Date de dernière revue
+UserReview=Utilisateur dernière revue
+DateNextReview=Date de prochaine revue
+DateValid=Date de validation
+UserValid=Valideur
+TriggerTypeTooltip=- Manuel : procédure lancée manuellement</br>- Dolibarr : procédure lancée sur une action (trigger)</br>- Récurrent : procédure récurrente (tâche planifiée)
+Draft=Brouillon
+Activated=Active
+Disabled=Désactivé
+Manual=Manuel
+Recurrent=Récurrent
+ProcedureTemplate=Modèle de procédure
+ActionsOnProcedureTemplate=Évènements sur le modèle de procédure
+ReadProcedureTemplates=Lire les modèles de procédure
+Create/UpdateProcedureTemplate=Créer/Modifier les modèles de procédures
+DeleteProcedureTemplates=Supprimer les modèles de procédures
+#
+# Sample widget
+#
+MyWidget = My widget
+MyWidgetDescription = My widget description

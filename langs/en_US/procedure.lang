@@ -1,0 +1,81 @@
+# Copyright (C) 2023 SuperAdmin <thibault.fiacre@atm-consulting.fr>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#
+# Generic
+#
+
+# Module label 'ModuleProcedureName'
+ModuleProcedureName = Procedure
+# Module description 'ModuleProcedureDesc'
+ModuleProcedureDesc = Procedure description
+
+#
+# Admin page
+#
+ProcedureSetup = Procedure setup
+Settings = Settings
+ProcedureSetupPage = Procedure setup page
+PROCEDURE_MYPARAM1 = My param 1
+PROCEDURE_MYPARAM1Tooltip = My param 1 tooltip
+PROCEDURE_MYPARAM2=My param 2
+PROCEDURE_MYPARAM2Tooltip=My param 2 tooltip
+
+
+#
+# About page
+#
+About = About
+ProcedureAbout = About Procedure
+ProcedureAboutPage = Procedure about page
+
+#
+# Sample page
+#
+ProcedureArea = Home Procedure
+MyPageName = My page name
+ProcedureListTemplate = Templates list
+ProcedureNewTemplate = New procedure template
+
+#
+# Card
+#
+procedureTemplate=Procedure template
+Label=Label
+ProcedureLabelTooltip=Procedure name
+Description=Description
+Version=Version
+TriggerType=Trigger type
+UserContactPoint=Contact point user
+GroupContactPoint=Contact point group
+DateLastReview=Date last review
+UserReview=User review
+DateNextReview=Date next review
+DateValid=Date validated
+UserValid=Validation user
+TriggerTypeTooltip=- Manual : for procedure launched manually</br>- Dolibarr : for procedure launched by trigger</br>- Recurrent : for procedure launched by Cron
+Draft=Draft
+Activated=Activated
+Disabled=Disabled
+ProcedureTemplate=Procedure template
+ActionsOnProcedureTemplate=Actions on procedure template
+ReadProcedureTemplates=Read procedure templates
+Create/UpdateProcedureTemplate=Create/Update procedure templates
+DeleteProcedureTemplates=Delete procedure templates
+#
+# Sample widget
+#
+MyWidget = My widget
+MyWidgetDescription = My widget description
