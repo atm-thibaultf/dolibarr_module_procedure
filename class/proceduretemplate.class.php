@@ -67,7 +67,7 @@ class ProcedureTemplate extends CommonObject
 
 	const STATUS_DRAFT = 0;
 	const STATUS_VALIDATED = 1;
-	const STATUS_CANCELED = 9;
+	const STATUS_CLOSED = 2;
 
 
 	/**
@@ -136,7 +136,7 @@ class ProcedureTemplate extends CommonObject
 		'last_main_doc' => array('type'=>'varchar(255)', 'label'=>'LastMainDoc', 'enabled'=>'1', 'position'=>600, 'notnull'=>0, 'visible'=>0,),
 		'import_key' => array('type'=>'varchar(14)', 'label'=>'ImportId', 'enabled'=>'1', 'position'=>1000, 'notnull'=>-1, 'visible'=>-2,),
 		'model_pdf' => array('type'=>'varchar(255)', 'label'=>'Model pdf', 'enabled'=>'1', 'position'=>1010, 'notnull'=>-1, 'visible'=>0,),
-		'status' => array('type'=>'integer', 'label'=>'Status', 'enabled'=>'1', 'position'=>2000, 'notnull'=>1, 'visible'=>5, 'index'=>1, 'arrayofkeyval'=>array('0'=>'Brouillon', '1'=>'Activ&eacute;', '9'=>'D&eacute;sactiv&eacute;'), 'validate'=>'1',),
+		'status' => array('type'=>'integer', 'label'=>'Status', 'enabled'=>'1', 'position'=>2000, 'notnull'=>1, 'visible'=>5, 'index'=>1, 'arrayofkeyval'=>array('0'=>'Brouillon', '1'=>'Activated', '2'=>'Disabled', '9'=>'Canceled'), 'validate'=>'1',),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>0, 'visible'=>-2,),
 	);
 	public $rowid;
@@ -536,6 +536,8 @@ class ProcedureTemplate extends CommonObject
 			return 0;
 		}
 
+
+
 		/*if (! ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && !empty($user->rights->procedure->myobject->write))
 		 || (!empty($conf->global->MAIN_USE_ADVANCED_PERMS) && !empty($user->rights->procedure->myobject->myobject_advance->validate))))
 		 {
@@ -562,9 +564,7 @@ class ProcedureTemplate extends CommonObject
 			$sql = "UPDATE ".MAIN_DB_PREFIX.$this->table_element;
 			$sql .= " SET ref = '".$this->db->escape($num)."',";
 			$sql .= " status = ".self::STATUS_VALIDATED;
-			if (!empty($this->fields['date_validation'])) {
-				$sql .= ", date_validation = '".$this->db->idate($now)."'";
-			}
+			$sql .= ", date_valid = '".$this->db->idate($now)."'";
 			if (!empty($this->fields['fk_user_valid'])) {
 				$sql .= ", fk_user_valid = ".((int) $user->id);
 			}
@@ -666,6 +666,25 @@ class ProcedureTemplate extends CommonObject
 	}
 
 	/**
+	 *	Set disabled status
+	 *
+	 *	@param	User	$user			Object user that modify
+	 *  @param	int		$notrigger		1=Does not execute triggers, 0=Execute triggers
+	 *	@return	int						<0 if KO, >0 if OK
+	 */
+	public function disable($user, $notrigger = 0)
+	{
+		// Protection
+		if ($this->status != self::STATUS_VALIDATED) {
+			return 0;
+		}
+		var_dump($this->status);
+		exit;
+
+		return $this->setStatusCommon($user, self::STATUS_CLOSED, $notrigger, 'PROCEDURETEMPLATE_UNVALIDATE');
+	}
+
+	/**
 	 *	Set cancel status
 	 *
 	 *	@param	User	$user			Object user that modify
@@ -686,7 +705,7 @@ class ProcedureTemplate extends CommonObject
 		 return -1;
 		 }*/
 
-		return $this->setStatusCommon($user, self::STATUS_CANCELED, $notrigger, 'PROCEDURETEMPLATE_CANCEL');
+		return $this->setStatusCommon($user, self::STATUS_CLOSED, $notrigger, 'PROCEDURETEMPLATE_CANCEL');
 	}
 
 	/**
@@ -929,16 +948,16 @@ class ProcedureTemplate extends CommonObject
 			global $langs;
 			//$langs->load("procedure@procedure");
 			$this->labelStatus[self::STATUS_DRAFT] = $langs->transnoentitiesnoconv('Draft');
-			$this->labelStatus[self::STATUS_VALIDATED] = $langs->transnoentitiesnoconv('Enabled');
-			$this->labelStatus[self::STATUS_CANCELED] = $langs->transnoentitiesnoconv('Disabled');
+			$this->labelStatus[self::STATUS_VALIDATED] = $langs->transnoentitiesnoconv('Activated');
+			$this->labelStatus[self::STATUS_CLOSED] = $langs->transnoentitiesnoconv('Disabled');
 			$this->labelStatusShort[self::STATUS_DRAFT] = $langs->transnoentitiesnoconv('Draft');
-			$this->labelStatusShort[self::STATUS_VALIDATED] = $langs->transnoentitiesnoconv('Enabled');
-			$this->labelStatusShort[self::STATUS_CANCELED] = $langs->transnoentitiesnoconv('Disabled');
+			$this->labelStatusShort[self::STATUS_VALIDATED] = $langs->transnoentitiesnoconv('Activated');
+			$this->labelStatusShort[self::STATUS_CLOSED] = $langs->transnoentitiesnoconv('Disabled');
 		}
 
 		$statusType = 'status'.$status;
 		//if ($status == self::STATUS_VALIDATED) $statusType = 'status1';
-		if ($status == self::STATUS_CANCELED) {
+		if ($status == self::STATUS_CLOSED) {
 			$statusType = 'status6';
 		}
 
@@ -1146,7 +1165,6 @@ class ProcedureTemplate extends CommonObject
 		return $error;
 	}
 }
-
 
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
 

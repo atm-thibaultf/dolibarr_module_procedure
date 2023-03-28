@@ -69,6 +69,7 @@ TriggerTypeTooltip=- Manuel : procédure lancée manuellement</br>- Dolibarr : p
 Draft=Brouillon
 Activated=Active
 Disabled=Désactivé
+Re-Open=Réactiver
 Manual=Manuel
 Recurrent=Récurrent
 ProcedureTemplate=Modèle de procédure
