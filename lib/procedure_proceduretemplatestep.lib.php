@@ -16,39 +16,38 @@
  */
 
 /**
- * \file    lib/procedure_template.lib.php
+ * \file    lib/procedure_proceduretemplatestep.lib.php
  * \ingroup procedure
- * \brief   Library files with common functions for ProcedureTemplate
+ * \brief   Library files with common functions for ProcedureTemplateStep
  */
 
 /**
- * Prepare array of tabs for ProcedureTemplate
+ * Prepare array of tabs for ProcedureTemplateStep
  *
- * @param	ProcedureTemplate	$object		ProcedureTemplate
+ * @param	ProcedureTemplateStep	$object		ProcedureTemplateStep
  * @return 	array					Array of tabs
  */
-function procedureTemplatePrepareHead($object)
+function proceduretemplatestepPrepareHead($object)
 {
 	global $db, $langs, $conf;
 
 	$langs->load("procedure@procedure");
 
-	$showtabofpagecontact = 0;
+	$showtabofpagecontact = 1;
 	$showtabofpagenote = 1;
 	$showtabofpagedocument = 1;
 	$showtabofpageagenda = 1;
-	$showtabofpagestep = 1;
 
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath("/procedure/proceduretemplate_card.php", 1).'?id='.$object->id;
-	$head[$h][1] = $langs->trans("ProcedureTemplate");
+	$head[$h][0] = dol_buildpath("/procedure/proceduretemplatestep_card.php", 1).'?id='.$object->id;
+	$head[$h][1] = $langs->trans("Card");
 	$head[$h][2] = 'card';
 	$h++;
 
 	if ($showtabofpagecontact) {
-		$head[$h][0] = dol_buildpath("/procedure/proceduretemplate_contact.php", 1).'?id='.$object->id;
+		$head[$h][0] = dol_buildpath("/procedure/proceduretemplatestep_contact.php", 1).'?id='.$object->id;
 		$head[$h][1] = $langs->trans("Contacts");
 		$head[$h][2] = 'contact';
 		$h++;
@@ -63,7 +62,7 @@ function procedureTemplatePrepareHead($object)
 			if (!empty($object->note_public)) {
 				$nbNote++;
 			}
-			$head[$h][0] = dol_buildpath('/procedure/proceduretemplate_note.php', 1).'?id='.$object->id;
+			$head[$h][0] = dol_buildpath('/procedure/proceduretemplatestep_note.php', 1).'?id='.$object->id;
 			$head[$h][1] = $langs->trans('Notes');
 			if ($nbNote > 0) {
 				$head[$h][1] .= (empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER) ? '<span class="badge marginleftonlyshort">'.$nbNote.'</span>' : '');
@@ -76,10 +75,10 @@ function procedureTemplatePrepareHead($object)
 	if ($showtabofpagedocument) {
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 		require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
-		$upload_dir = $conf->procedure->dir_output."/proceduretemplate/".dol_sanitizeFileName($object->ref);
+		$upload_dir = $conf->procedure->dir_output."/proceduretemplatestep/".dol_sanitizeFileName($object->ref);
 		$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 		$nbLinks = Link::count($db, $object->element, $object->id);
-		$head[$h][0] = dol_buildpath("/procedure/proceduretemplate_document.php", 1).'?id='.$object->id;
+		$head[$h][0] = dol_buildpath("/procedure/proceduretemplatestep_document.php", 1).'?id='.$object->id;
 		$head[$h][1] = $langs->trans('Documents');
 		if (($nbFiles + $nbLinks) > 0) {
 			$head[$h][1] .= '<span class="badge marginleftonlyshort">'.($nbFiles + $nbLinks).'</span>';
@@ -89,16 +88,9 @@ function procedureTemplatePrepareHead($object)
 	}
 
 	if ($showtabofpageagenda) {
-		$head[$h][0] = dol_buildpath("/procedure/proceduretemplate_agenda.php", 1).'?id='.$object->id;
+		$head[$h][0] = dol_buildpath("/procedure/proceduretemplatestep_agenda.php", 1).'?id='.$object->id;
 		$head[$h][1] = $langs->trans("Events");
 		$head[$h][2] = 'agenda';
-		$h++;
-	}
-
-	if ($showtabofpagestep) {
-		$head[$h][0] = dol_buildpath("/procedure/proceduretemplate_steps.php", 1).'?id='.$object->id;
-		$head[$h][1] = $langs->trans("Steps");
-		$head[$h][2] = 'steps';
 		$h++;
 	}
 
@@ -110,9 +102,9 @@ function procedureTemplatePrepareHead($object)
 	//$this->tabs = array(
 	//	'entity:-tabname:Title:@procedure:/procedure/mypage.php?id=__ID__'
 	//); // to remove a tab
-	complete_head_from_modules($conf, $langs, $object, $head, $h, 'proceduretemplate@procedure');
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'proceduretemplatestep@procedure');
 
-	complete_head_from_modules($conf, $langs, $object, $head, $h, 'proceduretemplate@procedure', 'remove');
+	complete_head_from_modules($conf, $langs, $object, $head, $h, 'proceduretemplatestep@procedure', 'remove');
 
 	return $head;
 }

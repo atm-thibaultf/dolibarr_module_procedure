@@ -50,7 +50,7 @@ ProcedureListTemplate = Liste des modèles
 ProcedureNewTemplate = Nouveau modèle
 
 #
-# Card
+# Card main tab
 #
 procedureTemplate=Modèle de procédure
 Label=Libellé
@@ -73,10 +73,24 @@ Re-Open=Réactiver
 Manual=Manuel
 Recurrent=Récurrent
 ProcedureTemplate=Modèle de procédure
+
+#
+# Card other tabs
+#
 ActionsOnProcedureTemplate=Évènements sur le modèle de procédure
+Steps=Étapes
+AddStep=Ajouter une étape
+StepsOnProcedureTemplate=Étapes du modèle de procédure
+#
+# Permissions
+#
 ReadProcedureTemplates=Lire les modèles de procédure
 Create/UpdateProcedureTemplate=Créer/Modifier les modèles de procédures
 DeleteProcedureTemplates=Supprimer les modèles de procédures
+ReadProcedureTemplatesSteps=Lire les étapes des modèles de procédure
+Create/UpdateProcedureTemplateSteps=Créer/modifier les étapes des modèles de procédure
+DeleteProcedureTemplatesSteps=Supprimer les étapes des modèles de procédure
+
 #
 # Sample widget
 #
