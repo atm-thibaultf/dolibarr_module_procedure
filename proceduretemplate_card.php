@@ -399,16 +399,16 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	$morehtmlref = '<div class="refidno">';
 
 		// Label and version
-		//$morehtmlref .= $form->editfieldkey("Label", 'label', $object->label, $object, $usercancreate, 'string', '', 0, 1);
-		$morehtmlref .= $form->editfieldval("Label", 'label', $object->label, $object, $usercancreate, 'string', '', null, null, '', 1);
+		//$morehtmlref .= $form->editfieldkey("Label", 'label', $object->label, $object, $permissiontoadd, 'string', '', 0, 1);
+		$morehtmlref .= $form->editfieldval("Label", 'label', $object->label, $object, $permissiontoadd, 'string', '', null, null, '', 1);
 		$morehtmlref .= '<br>';
-		$morehtmlref .= $form->editfieldkey("Version", 'version', $object->version, $object, $usercancreate, 'string', '', 0, 1);
-		$morehtmlref .= $form->editfieldval("Version", 'version', $object->version, $object, $usercancreate, 'string', '', null, null, '', 1);
+		$morehtmlref .= $form->editfieldkey("Version", 'version', $object->version, $object, $permissiontoadd, 'string', '', 0, 1);
+		$morehtmlref .= $form->editfieldval("Version", 'version', $object->version, $object, $permissiontoadd, 'string', '', null, null, '', 1);
 
 	/*
 		// Ref customer
-		$morehtmlref .= $form->editfieldkey("RefCustomer", 'ref_client', $object->ref_client, $object, $usercancreate, 'string', '', 0, 1);
-		$morehtmlref .= $form->editfieldval("RefCustomer", 'ref_client', $object->ref_client, $object, $usercancreate, 'string'.(isset($conf->global->THIRDPARTY_REF_INPUT_SIZE) ? ':'.$conf->global->THIRDPARTY_REF_INPUT_SIZE : ''), '', null, null, '', 1);
+		$morehtmlref .= $form->editfieldkey("RefCustomer", 'ref_client', $object->ref_client, $object, $permissiontoadd, 'string', '', 0, 1);
+		$morehtmlref .= $form->editfieldval("RefCustomer", 'ref_client', $object->ref_client, $object, $permissiontoadd, 'string'.(isset($conf->global->THIRDPARTY_REF_INPUT_SIZE) ? ':'.$conf->global->THIRDPARTY_REF_INPUT_SIZE : ''), '', null, null, '', 1);
 		// Thirdparty
 		$morehtmlref .= '<br>'.$object->thirdparty->getNomUrl(1, 'customer');
 		if (empty($conf->global->MAIN_DISABLE_OTHER_LINK) && $object->thirdparty->id > 0) {

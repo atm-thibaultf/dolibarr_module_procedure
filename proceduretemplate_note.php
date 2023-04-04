@@ -161,10 +161,10 @@ if ($id > 0 || !empty($ref)) {
 	$linkback = '<a href="'.dol_buildpath('/procedure/proceduretemplate_list.php', 1).'?restore_lastsearch_values=1'.(!empty($socid) ? '&socid='.$socid : '').'">'.$langs->trans("BackToList").'</a>';
 
 	$morehtmlref = '<div class="refidno">';
-	$morehtmlref .= $form->editfieldval("Label", 'label', $object->label, $object, $usercancreate, 'string', '', null, null, '', 1);
+	$morehtmlref .= $form->editfieldval("Label", 'label', $object->label, $object, $permissiontoadd, 'string', '', null, null, '', 1);
 	$morehtmlref .= '<br>';
-	$morehtmlref .= $form->editfieldkey("Version", 'version', $object->version, $object, $usercancreate, 'string', '', 0, 1);
-	$morehtmlref .= $form->editfieldval("Version", 'version', $object->version, $object, $usercancreate, 'string', '', null, null, '', 1);
+	$morehtmlref .= $form->editfieldkey("Version", 'version', $object->version, $object, $permissiontoadd, 'string', '', 0, 1);
+	$morehtmlref .= $form->editfieldval("Version", 'version', $object->version, $object, $permissiontoadd, 'string', '', null, null, '', 1);
 
 	/*
 	 // Ref customer

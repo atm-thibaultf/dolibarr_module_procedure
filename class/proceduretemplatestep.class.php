@@ -116,7 +116,7 @@ class ProcedureTemplateStep extends CommonObject
 	 */
 	public $fields=array(
 		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>'1', 'position'=>1, 'notnull'=>1, 'visible'=>0, 'noteditable'=>'1', 'index'=>1, 'css'=>'left', 'comment'=>"Id"),
-		'fk_procedure_template' => array('type'=>'integer:ProcedureTemplate:procedure/class/proceduretemplate.class.php', 'label'=>'ProcedureTemplate', 'picto'=>'fa-tasks', 'enabled'=>'', 'position'=>50, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'css'=>'maxwidth500 widthcentpercentminusxx', 'csslist'=>'tdoverflowmax150',),
+		'fk_proceduretemplate' => array('type'=>'integer:ProcedureTemplate:procedure/class/proceduretemplate.class.php', 'label'=>'ProcedureTemplate', 'picto'=>'fa-tasks', 'enabled'=>'', 'position'=>50, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'css'=>'maxwidth500 widthcentpercentminusxx', 'csslist'=>'tdoverflowmax150',),
 		'rank' => array('type'=>'integer', 'label'=>'Rank', 'enabled'=>'1', 'position'=>20, 'notnull'=>1, 'visible'=>5, 'noteditable'=>'1', 'default'=>'1', 'index'=>1, 'searchall'=>1, 'validate'=>'1', 'comment'=>"Rank of object"),
 		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>1, 'alwayseditable'=>'1', 'searchall'=>1, 'css'=>'minwidth300', 'cssview'=>'wordbreak', 'help'=>"Help text", 'showoncombobox'=>'2', 'validate'=>'1',),
 		'description' => array('type'=>'text', 'label'=>'Description', 'enabled'=>'1', 'position'=>60, 'notnull'=>0, 'visible'=>3, 'validate'=>'1',),
@@ -127,7 +127,7 @@ class ProcedureTemplateStep extends CommonObject
 		'import_key' => array('type'=>'varchar(14)', 'label'=>'ImportId', 'enabled'=>'1', 'position'=>1000, 'notnull'=>-1, 'visible'=>-2,),
 	);
 	public $rowid;
-	public $fk_procedure_template;
+	public $fk_proceduretemplate;
 	public $rank;
 	public $label;
 	public $description;

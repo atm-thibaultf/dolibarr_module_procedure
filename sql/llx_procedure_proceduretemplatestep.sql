@@ -17,7 +17,7 @@
 CREATE TABLE llx_procedure_template_step(
 	-- BEGIN MODULEBUILDER FIELDS
 	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-	fk_procedure_template integer NOT NULL, 
+	fk_proceduretemplate integer NOT NULL,
 	rank integer DEFAULT 1 NOT NULL, 
 	label varchar(255), 
 	description text, 

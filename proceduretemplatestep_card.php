@@ -253,7 +253,7 @@ if ($action == 'create') {
 		accessforbidden('NotEnoughPermissions', 0, 1);
 	}
 
-	print load_fiche_titre($langs->trans("NewObject", $langs->transnoentitiesnoconv("ProcedureTemplateStep")), '', 'object_'.$object->picto);
+	print load_fiche_titre($langs->trans($langs->transnoentitiesnoconv("NewProcedureTemplateStep")), '', 'object_'.$object->picto);
 
 	print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
