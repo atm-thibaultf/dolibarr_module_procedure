@@ -26,8 +26,6 @@
 // Put here all includes required by your class file
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/custom/procedure/class/proceduretemplate.class.php';
-//require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
-//require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
 
 /**
  * Class for ProcedureTemplateStep
@@ -64,12 +62,6 @@ class ProcedureTemplateStep extends CommonObject
 	 * @var string String with name of icon for myobject. Must be a 'fa-xxx' fontawesome code (or 'fa-xxx_fa_color_size') or 'myobject@procedure' if picto is file 'img/object_myobject.png'.
 	 */
 	public $picto = 'fa-file';
-
-
-	//const STATUS_DRAFT = 0;
-	//const STATUS_VALIDATED = 1;
-	//const STATUS_CANCELED = 9;
-
 
 	/**
 	 *  'type' field format:
@@ -116,10 +108,10 @@ class ProcedureTemplateStep extends CommonObject
 	 */
 	public $fields=array(
 		'rowid' => array('type'=>'integer', 'label'=>'TechnicalID', 'enabled'=>'1', 'position'=>1, 'notnull'=>1, 'visible'=>0, 'noteditable'=>'1', 'index'=>1, 'css'=>'left', 'comment'=>"Id"),
-		'fk_proceduretemplate' => array('type'=>'integer:ProcedureTemplate:procedure/class/proceduretemplate.class.php', 'label'=>'ProcedureTemplate', 'picto'=>'fa-tasks', 'enabled'=>'', 'position'=>50, 'notnull'=>1, 'visible'=>1, 'index'=>1, 'css'=>'maxwidth500 widthcentpercentminusxx', 'csslist'=>'tdoverflowmax150',),
-		'rank' => array('type'=>'integer', 'label'=>'Rank', 'enabled'=>'1', 'position'=>20, 'notnull'=>1, 'visible'=>5, 'noteditable'=>'1', 'default'=>'1', 'index'=>1, 'searchall'=>1, 'validate'=>'1', 'comment'=>"Rank of object"),
-		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>1, 'alwayseditable'=>'1', 'searchall'=>1, 'css'=>'minwidth300', 'cssview'=>'wordbreak', 'help'=>"Help text", 'showoncombobox'=>'2', 'validate'=>'1',),
-		'description' => array('type'=>'text', 'label'=>'Description', 'enabled'=>'1', 'position'=>60, 'notnull'=>0, 'visible'=>3, 'validate'=>'1',),
+		'rank' => array('type'=>'integer', 'label'=>'Rank', 'enabled'=>'1', 'position'=>20, 'notnull'=>1, 'visible'=>5, 'noteditable'=>'1', 'default'=>'1', 'index'=>1, 'css'=>'left', 'csslist'=>'left', 'searchall'=>1, 'validate'=>'1', 'comment'=>"Rank of object"),
+		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>1, 'alwayseditable'=>'0', 'searchall'=>1, 'cssview'=>'wordbreak', 'help'=>"Help text", 'showoncombobox'=>'2', 'validate'=>'1',),
+		'description' => array('type'=>'html', 'label'=>'Description', 'enabled'=>'1', 'position'=>60, 'notnull'=>0, 'visible'=>1, 'validate'=>'1', 'csslist'=>'minwidth300 widthcentpercentminusx',),
+		'fk_proceduretemplate' => array('type'=>'integer:ProcedureTemplate:procedure/class/proceduretemplate.class.php', 'label'=>'ProcedureTemplate', 'enabled'=>'1', 'position'=>50, 'notnull'=>1, 'visible'=>3, 'noteditable'=>0, 'index'=>1, 'css'=>'maxwidth500 widthcentpercentminusxx', 'csslist'=>'tdoverflowmax150',),
 		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2,),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>0, 'visible'=>-2,),
 		'fk_user_creat' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserAuthor', 'picto'=>'user', 'enabled'=>'1', 'position'=>510, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid', 'csslist'=>'tdoverflowmax150',),
@@ -136,44 +128,14 @@ class ProcedureTemplateStep extends CommonObject
 	public $fk_user_creat;
 	public $fk_user_modif;
 	public $import_key;
+
+
 	// END MODULEBUILDER PROPERTIES
-
-
-	// If this object has a subtable with lines
-
-	// /**
-	//  * @var string    Name of subtable line
-	//  */
-	// public $table_element_line = 'procedure_myobjectline';
 
 	/**
 	  * @var string    Field with ID of parent key if this object has a parent
 	*/
 	public $fk_element = 'fk_proceduretemplate';
-
-	// /**
-	//  * @var string    Name of subtable class that manage subtable lines
-	//  */
-	// public $class_element_line = 'ProcedureTemplateStepline';
-
-	// /**
-	//  * @var array	List of child tables. To test if we can delete object.
-	//  */
-	// protected $childtables = array();
-
-	// /**
-	//  * @var array    List of child tables. To know object to delete on cascade.
-	//  *               If name matches '@ClassNAme:FilePathClass;ParentFkFieldName' it will
-	//  *               call method deleteByParentField(parentId, ParentFkFieldName) to fetch and delete child object
-	//  */
-	// protected $childtablesoncascade = array('procedure_myobjectdet');
-
-	// /**
-	//  * @var ProcedureTemplateStepLine[]     Array of subtable lines
-	//  */
-	// public $lines = array();
-
-
 
 	/**
 	 * Constructor
@@ -228,111 +190,46 @@ class ProcedureTemplateStep extends CommonObject
 	public function create(User $user, $notrigger = false)
 	{
 		$resultcreate = $this->createCommon($user, $notrigger);
-
 		//$resultvalidate = $this->validate($user, $notrigger);
+
+		// if source steps exist
+		if ($resultcreate && !empty($this->step_source)) {
+
+			$this->db->begin();
+
+			if (!$error) {
+				foreach ($this->step_source AS $key => $value) {
+
+					$sql = "INSERT INTO " . $this->db->prefix() . 'procedure_template_step_link';
+					$sql .= " (fk_source_step, fk_step)";
+					$sql .= " VALUES (" . $value . ", " . $this->id . ");";
+					$res = $this->db->query($sql);
+				}
+				if (!$res) {
+					$error++;
+					$this->errors[] = $this->db->lasterror();
+				}
+			}
+
+			// Commit or rollback
+			if ($error) {
+				$this->db->rollback();
+				$error++;
+				// Creation KO
+				if (!empty($this->errors)) {
+					setEventMessages(null, $this->errors, 'errors');
+				} else {
+					setEventMessages($this->error, null, 'errors');
+				}
+				$action = 'create';
+			}
+		}
+
+		$this->db->commit();
 
 		return $resultcreate;
 	}
 
-//	/**
-//	 * Clone an object into another one
-//	 *
-//	 * @param  	User 	$user      	User that creates
-//	 * @param  	int 	$fromid     Id of object to clone
-//	 * @return 	mixed 				New object created, <0 if KO
-//	 */
-//	public function createFromClone(User $user, $fromid)
-//	{
-//		global $langs, $extrafields;
-//		$error = 0;
-//
-//		dol_syslog(__METHOD__, LOG_DEBUG);
-//
-//		$object = new self($this->db);
-//
-//		$this->db->begin();
-//
-//		// Load source object
-//		$result = $object->fetchCommon($fromid);
-//		if ($result > 0 && !empty($object->table_element_line)) {
-//			$object->fetchLines();
-//		}
-//
-//		// get lines so they will be clone
-//		//foreach($this->lines as $line)
-//		//	$line->fetch_optionals();
-//
-//		// Reset some properties
-//		unset($object->id);
-//		unset($object->fk_user_creat);
-//		unset($object->import_key);
-//
-//		// Clear fields
-//		if (property_exists($object, 'ref')) {
-//			$object->ref = empty($this->fields['ref']['default']) ? "Copy_Of_".$object->ref : $this->fields['ref']['default'];
-//		}
-//		if (property_exists($object, 'label')) {
-//			$object->label = empty($this->fields['label']['default']) ? $langs->trans("CopyOf")." ".$object->label : $this->fields['label']['default'];
-//		}
-////		if (property_exists($object, 'status')) {
-////			$object->status = self::STATUS_DRAFT;
-////		}
-//		if (property_exists($object, 'date_creation')) {
-//			$object->date_creation = dol_now();
-//		}
-//		if (property_exists($object, 'date_modification')) {
-//			$object->date_modification = null;
-//		}
-//		// ...
-//		// Clear extrafields that are unique
-//		if (is_array($object->array_options) && count($object->array_options) > 0) {
-//			$extrafields->fetch_name_optionals_label($this->table_element);
-//			foreach ($object->array_options as $key => $option) {
-//				$shortkey = preg_replace('/options_/', '', $key);
-//				if (!empty($extrafields->attributes[$this->table_element]['unique'][$shortkey])) {
-//					//var_dump($key);
-//					//var_dump($clonedObj->array_options[$key]); exit;
-//					unset($object->array_options[$key]);
-//				}
-//			}
-//		}
-//
-//		// Create clone
-//		$object->context['createfromclone'] = 'createfromclone';
-//		$result = $object->createCommon($user);
-//		if ($result < 0) {
-//			$error++;
-//			$this->error = $object->error;
-//			$this->errors = $object->errors;
-//		}
-//
-//		if (!$error) {
-//			// copy internal contacts
-//			if ($this->copy_linked_contact($object, 'internal') < 0) {
-//				$error++;
-//			}
-//		}
-//
-//		if (!$error) {
-//			// copy external contacts if same company
-//			if (!empty($object->socid) && property_exists($this, 'fk_soc') && $this->fk_soc == $object->socid) {
-//				if ($this->copy_linked_contact($object, 'external') < 0) {
-//					$error++;
-//				}
-//			}
-//		}
-//
-//		unset($object->context['createfromclone']);
-//
-//		// End
-//		if (!$error) {
-//			$this->db->commit();
-//			return $object;
-//		} else {
-//			$this->db->rollback();
-//			return -1;
-//		}
-//	}
 
 	/**
 	 * Load object in memory from the database
@@ -350,20 +247,6 @@ class ProcedureTemplateStep extends CommonObject
 		return $result;
 	}
 
-//	/**
-//	 * Load object lines in memory from the database
-//	 *
-//	 * @return int         <0 if KO, 0 if not found, >0 if OK
-//	 */
-//	public function fetchLines()
-//	{
-//		$this->lines = array();
-//
-//		$result = $this->fetchLinesCommon();
-//		return $result;
-//	}
-
-
 	/**
 	 * Load list of objects in memory from the database.
 	 *
@@ -375,7 +258,7 @@ class ProcedureTemplateStep extends CommonObject
 	 * @param  string      $filtermode   Filter mode (AND or OR)
 	 * @return array|int                 int <0 if KO, array of pages if OK
 	 */
-	public function fetchAll($sortorder = '', $sortfield = '', $limit = 0, $offset = 0, array $filter = array(), $filtermode = 'AND')
+	public function fetchAll($sortorder = '', $sortfield = '', $limit = 0, $offset = 0, $filter = '', $filtermode = 'AND')
 	{
 		global $conf;
 
@@ -384,8 +267,9 @@ class ProcedureTemplateStep extends CommonObject
 		$records = array();
 
 		$sql = "SELECT ";
-		$sql .= $this->getFieldList('t');
+		$sql .= $this->getFieldList('t') . ", pt.label AS labelproceduretemplate";
 		$sql .= " FROM ".$this->db->prefix().$this->table_element." as t";
+		$sql .= " LEFT JOIN ".$this->db->prefix()."procedure_template as pt ON pt.rowid = t.".$this->fk_element;
 		if (isset($this->ismultientitymanaged) && $this->ismultientitymanaged == 1) {
 			$sql .= " WHERE t.entity IN (".getEntity($this->element).")";
 		} else {
@@ -393,7 +277,7 @@ class ProcedureTemplateStep extends CommonObject
 		}
 		// Manage filter
 		$sqlwhere = array();
-		if (count($filter) > 0) {
+		if (!empty($filter)) {
 			foreach ($filter as $key => $value) {
 				if ($key == 't.rowid') {
 					$sqlwhere[] = $key." = ".((int) $value);
@@ -420,16 +304,18 @@ class ProcedureTemplateStep extends CommonObject
 		}
 
 		$resql = $this->db->query($sql);
+
 		if ($resql) {
 			$num = $this->db->num_rows($resql);
+
 			$i = 0;
 			while ($i < ($limit ? min($limit, $num) : $num)) {
 				$obj = $this->db->fetch_object($resql);
 
 				$record = new self($this->db);
 				$record->setVarsFromFetchObj($obj);
-
-				$records[$record->id] = $record;
+				$record->labelproceduretemplate = $obj->labelproceduretemplate;
+				$records[$i] = $record;
 
 				$i++;
 			}
@@ -469,222 +355,6 @@ class ProcedureTemplateStep extends CommonObject
 		//return $this->deleteCommon($user, $notrigger, 1);
 	}
 
-//	/**
-//	 *  Delete a line of object in database
-//	 *
-//	 *	@param  User	$user       User that delete
-//	 *  @param	int		$idline		Id of line to delete
-//	 *  @param 	bool 	$notrigger  false=launch triggers after, true=disable triggers
-//	 *  @return int         		>0 if OK, <0 if KO
-//	 */
-//	public function deleteLine(User $user, $idline, $notrigger = false)
-//	{
-//		if ($this->status < 0) {
-//			$this->error = 'ErrorDeleteLineNotAllowedByObjectStatus';
-//			return -2;
-//		}
-//
-//		return $this->deleteLineCommon($user, $idline, $notrigger);
-//	}
-//
-//
-//	/**
-//	 *	Validate object
-//	 *
-//	 *	@param		User	$user     		User making status change
-//	 *  @param		int		$notrigger		1=Does not execute triggers, 0= execute triggers
-//	 *	@return  	int						<=0 if OK, 0=Nothing done, >0 if KO
-//	 */
-//	public function validate($user, $notrigger = 0)
-//	{
-//		global $conf, $langs;
-//
-//		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-//
-//		$error = 0;
-//
-//		// Protection
-//		if ($this->status == self::STATUS_VALIDATED) {
-//			dol_syslog(get_class($this)."::validate action abandonned: already validated", LOG_WARNING);
-//			return 0;
-//		}
-//
-//		/*if (! ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && !empty($user->rights->procedure->myobject->write))
-//		 || (!empty($conf->global->MAIN_USE_ADVANCED_PERMS) && !empty($user->rights->procedure->myobject->myobject_advance->validate))))
-//		 {
-//		 $this->error='NotEnoughPermissions';
-//		 dol_syslog(get_class($this)."::valid ".$this->error, LOG_ERR);
-//		 return -1;
-//		 }*/
-//
-//		$now = dol_now();
-//
-//		$this->db->begin();
-//
-//		// Define new ref
-//		if (!$error && (preg_match('/^[\(]?PROV/i', $this->ref) || empty($this->ref))) { // empty should not happened, but when it occurs, the test save life
-//			$num = $this->getNextNumRef();
-//		} else {
-//			$num = $this->ref;
-//		}
-//		$this->newref = $num;
-//
-//		if (!empty($num)) {
-//			// Validate
-//			$sql = "UPDATE ".MAIN_DB_PREFIX.$this->table_element;
-//			$sql .= " SET ref = '".$this->db->escape($num)."',";
-//			$sql .= " status = ".self::STATUS_VALIDATED;
-//			if (!empty($this->fields['date_validation'])) {
-//				$sql .= ", date_validation = '".$this->db->idate($now)."'";
-//			}
-//			if (!empty($this->fields['fk_user_valid'])) {
-//				$sql .= ", fk_user_valid = ".((int) $user->id);
-//			}
-//			$sql .= " WHERE rowid = ".((int) $this->id);
-//
-//			dol_syslog(get_class($this)."::validate()", LOG_DEBUG);
-//			$resql = $this->db->query($sql);
-//			if (!$resql) {
-//				dol_print_error($this->db);
-//				$this->error = $this->db->lasterror();
-//				$error++;
-//			}
-//
-//			if (!$error && !$notrigger) {
-//				// Call trigger
-//				$result = $this->call_trigger('PROCEDURETEMPLATESTEP_VALIDATE', $user);
-//				if ($result < 0) {
-//					$error++;
-//				}
-//				// End call triggers
-//			}
-//		}
-//
-//		if (!$error) {
-//			$this->oldref = $this->ref;
-//
-//			// Rename directory if dir was a temporary ref
-//			if (preg_match('/^[\(]?PROV/i', $this->ref)) {
-//				// Now we rename also files into index
-//				$sql = 'UPDATE '.MAIN_DB_PREFIX."ecm_files set filename = CONCAT('".$this->db->escape($this->newref)."', SUBSTR(filename, ".(strlen($this->ref) + 1).")), filepath = 'proceduretemplatestep/".$this->db->escape($this->newref)."'";
-//				$sql .= " WHERE filename LIKE '".$this->db->escape($this->ref)."%' AND filepath = 'proceduretemplatestep/".$this->db->escape($this->ref)."' and entity = ".$conf->entity;
-//				$resql = $this->db->query($sql);
-//				if (!$resql) {
-//					$error++; $this->error = $this->db->lasterror();
-//				}
-//
-//				// We rename directory ($this->ref = old ref, $num = new ref) in order not to lose the attachments
-//				$oldref = dol_sanitizeFileName($this->ref);
-//				$newref = dol_sanitizeFileName($num);
-//				$dirsource = $conf->procedure->dir_output.'/proceduretemplatestep/'.$oldref;
-//				$dirdest = $conf->procedure->dir_output.'/proceduretemplatestep/'.$newref;
-//				if (!$error && file_exists($dirsource)) {
-//					dol_syslog(get_class($this)."::validate() rename dir ".$dirsource." into ".$dirdest);
-//
-//					if (@rename($dirsource, $dirdest)) {
-//						dol_syslog("Rename ok");
-//						// Rename docs starting with $oldref with $newref
-//						$listoffiles = dol_dir_list($conf->procedure->dir_output.'/proceduretemplatestep/'.$newref, 'files', 1, '^'.preg_quote($oldref, '/'));
-//						foreach ($listoffiles as $fileentry) {
-//							$dirsource = $fileentry['name'];
-//							$dirdest = preg_replace('/^'.preg_quote($oldref, '/').'/', $newref, $dirsource);
-//							$dirsource = $fileentry['path'].'/'.$dirsource;
-//							$dirdest = $fileentry['path'].'/'.$dirdest;
-//							@rename($dirsource, $dirdest);
-//						}
-//					}
-//				}
-//			}
-//		}
-//
-//		// Set new ref and current status
-//		if (!$error) {
-//			$this->ref = $num;
-//			$this->status = self::STATUS_VALIDATED;
-//		}
-//
-//		if (!$error) {
-//			$this->db->commit();
-//			return 1;
-//		} else {
-//			$this->db->rollback();
-//			return -1;
-//		}
-//	}
-//
-//
-//	/**
-//	 *	Set draft status
-//	 *
-//	 *	@param	User	$user			Object user that modify
-//	 *  @param	int		$notrigger		1=Does not execute triggers, 0=Execute triggers
-//	 *	@return	int						<0 if KO, >0 if OK
-//	 */
-//	public function setDraft($user, $notrigger = 0)
-//	{
-//		// Protection
-//		if ($this->status <= self::STATUS_DRAFT) {
-//			return 0;
-//		}
-//
-//		/*if (! ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && !empty($user->rights->procedure->write))
-//		 || (!empty($conf->global->MAIN_USE_ADVANCED_PERMS) && !empty($user->rights->procedure->procedure_advance->validate))))
-//		 {
-//		 $this->error='Permission denied';
-//		 return -1;
-//		 }*/
-//
-//		return $this->setStatusCommon($user, self::STATUS_DRAFT, $notrigger, 'PROCEDURETEMPLATESTEP_UNVALIDATE');
-//	}
-//
-//	/**
-//	 *	Set cancel status
-//	 *
-//	 *	@param	User	$user			Object user that modify
-//	 *  @param	int		$notrigger		1=Does not execute triggers, 0=Execute triggers
-//	 *	@return	int						<0 if KO, 0=Nothing done, >0 if OK
-//	 */
-//	public function cancel($user, $notrigger = 0)
-//	{
-//		// Protection
-//		if ($this->status != self::STATUS_VALIDATED) {
-//			return 0;
-//		}
-//
-//		/*if (! ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && !empty($user->rights->procedure->write))
-//		 || (!empty($conf->global->MAIN_USE_ADVANCED_PERMS) && !empty($user->rights->procedure->procedure_advance->validate))))
-//		 {
-//		 $this->error='Permission denied';
-//		 return -1;
-//		 }*/
-//
-//		return $this->setStatusCommon($user, self::STATUS_CANCELED, $notrigger, 'PROCEDURETEMPLATESTEP_CANCEL');
-//	}
-//
-//	/**
-//	 *	Set back to validated status
-//	 *
-//	 *	@param	User	$user			Object user that modify
-//	 *  @param	int		$notrigger		1=Does not execute triggers, 0=Execute triggers
-//	 *	@return	int						<0 if KO, 0=Nothing done, >0 if OK
-//	 */
-//	public function reopen($user, $notrigger = 0)
-//	{
-//		// Protection
-//		if ($this->status == self::STATUS_VALIDATED) {
-//			return 0;
-//		}
-//
-//		/*if (! ((empty($conf->global->MAIN_USE_ADVANCED_PERMS) && !empty($user->rights->procedure->write))
-//		 || (!empty($conf->global->MAIN_USE_ADVANCED_PERMS) && !empty($user->rights->procedure->procedure_advance->validate))))
-//		 {
-//		 $this->error='Permission denied';
-//		 return -1;
-//		 }*/
-//
-//		return $this->setStatusCommon($user, self::STATUS_VALIDATED, $notrigger, 'PROCEDURETEMPLATESTEP_REOPEN');
-//	}
-
 	/**
 	 * getTooltipContentArray
 	 * @param array $params params to construct tooltip data
@@ -708,218 +378,6 @@ class ProcedureTemplateStep extends CommonObject
 
 		return $datas;
 	}
-
-	/**
-	 *  Return a link to the object card (with optionaly the picto)
-	 *
-	 *  @param  int     $withpicto                  Include picto in link (0=No picto, 1=Include picto into link, 2=Only picto)
-	 *  @param  string  $option                     On what the link point to ('nolink', ...)
-	 *  @param  int     $notooltip                  1=Disable tooltip
-	 *  @param  string  $morecss                    Add more css on link
-	 *  @param  int     $save_lastsearch_value      -1=Auto, 0=No save of lastsearch_values when clicking, 1=Save lastsearch_values whenclicking
-	 *  @return	string                              String with URL
-	 */
-	public function getNomUrl($withpicto = 0, $option = '', $notooltip = 0, $morecss = '', $save_lastsearch_value = -1)
-	{
-		global $conf, $langs, $hookmanager;
-
-		if (!empty($conf->dol_no_mouse_hover)) {
-			$notooltip = 1; // Force disable tooltips
-		}
-
-		$result = '';
-		$params = [
-			'id' => $this->id,
-			'objecttype' => $this->element.($this->module ? '@'.$this->module : ''),
-			'option' => $option,
-		];
-		$classfortooltip = 'classfortooltip';
-		$dataparams = '';
-		if (getDolGlobalInt('MAIN_ENABLE_AJAX_TOOLTIP')) {
-			$classfortooltip = 'classforajaxtooltip';
-			$dataparams = " data-params='".json_encode($params)."'";
-			// $label = $langs->trans('Loading');
-		}
-		$label = implode($this->getTooltipContentArray($params));
-
-		$url = dol_buildpath('/procedure/proceduretemplatestep_card.php', 1).'?id='.$this->id;
-
-		if ($option != 'nolink') {
-			// Add param to save lastsearch_values or not
-			$add_save_lastsearch_values = ($save_lastsearch_value == 1 ? 1 : 0);
-			if ($save_lastsearch_value == -1 && preg_match('/list\.php/', $_SERVER["PHP_SELF"])) {
-				$add_save_lastsearch_values = 1;
-			}
-			if ($url && $add_save_lastsearch_values) {
-				$url .= '&save_lastsearch_values=1';
-			}
-		}
-
-		$linkclose = '';
-		if (empty($notooltip)) {
-			if (!empty($conf->global->MAIN_OPTIMIZEFORTEXTBROWSER)) {
-				$label = $langs->trans("ShowProcedureTemplateStep");
-				$linkclose .= ' alt="'.dol_escape_htmltag($label, 1).'"';
-			}
-			$linkclose .= ' title="'.dol_escape_htmltag($label, 1).'"';
-			$linkclose .= $dataparams.' class="'.$classfortooltip.($morecss ? ' '.$morecss : '').'"';
-		} else {
-			$linkclose = ($morecss ? ' class="'.$morecss.'"' : '');
-		}
-
-		if ($option == 'nolink' || empty($url)) {
-			$linkstart = '<span';
-		} else {
-			$linkstart = '<a href="'.$url.'"';
-		}
-		$linkstart .= $linkclose.'>';
-		if ($option == 'nolink' || empty($url)) {
-			$linkend = '</span>';
-		} else {
-			$linkend = '</a>';
-		}
-
-		$result .= $linkstart;
-
-		if (empty($this->showphoto_on_popup)) {
-			if ($withpicto) {
-				$result .= img_object(($notooltip ? '' : $label), ($this->picto ? $this->picto : 'generic'), ($notooltip ? (($withpicto != 2) ? 'class="paddingright"' : '') : $dataparams.' class="'.(($withpicto != 2) ? 'paddingright ' : '').$classfortooltip.'"'), 0, 0, $notooltip ? 0 : 1);
-			}
-		} else {
-			if ($withpicto) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-
-				list($class, $module) = explode('@', $this->picto);
-				$upload_dir = $conf->$module->multidir_output[$conf->entity]."/$class/".dol_sanitizeFileName($this->ref);
-				$filearray = dol_dir_list($upload_dir, "files");
-				$filename = $filearray[0]['name'];
-				if (!empty($filename)) {
-					$pospoint = strpos($filearray[0]['name'], '.');
-
-					$pathtophoto = $class.'/'.$this->ref.'/thumbs/'.substr($filename, 0, $pospoint).'_mini'.substr($filename, $pospoint);
-					if (empty($conf->global->{strtoupper($module.'_'.$class).'_FORMATLISTPHOTOSASUSERS'})) {
-						$result .= '<div class="floatleft inline-block valignmiddle divphotoref"><div class="photoref"><img class="photo'.$module.'" alt="No photo" border="0" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart='.$module.'&entity='.$conf->entity.'&file='.urlencode($pathtophoto).'"></div></div>';
-					} else {
-						$result .= '<div class="floatleft inline-block valignmiddle divphotoref"><img class="photouserphoto userphoto" alt="No photo" border="0" src="'.DOL_URL_ROOT.'/viewimage.php?modulepart='.$module.'&entity='.$conf->entity.'&file='.urlencode($pathtophoto).'"></div>';
-					}
-
-					$result .= '</div>';
-				} else {
-					$result .= img_object(($notooltip ? '' : $label), ($this->picto ? $this->picto : 'generic'), ($notooltip ? (($withpicto != 2) ? 'class="paddingright"' : '') : 'class="'.(($withpicto != 2) ? 'paddingright ' : '').'classfortooltip"'), 0, 0, $notooltip ? 0 : 1);
-				}
-			}
-		}
-
-		if ($withpicto != 2) {
-			$result .= $this->ref;
-		}
-
-		$result .= $linkend;
-		//if ($withpicto != 2) $result.=(($addlabel && $this->label) ? $sep . dol_trunc($this->label, ($addlabel > 1 ? $addlabel : 0)) : '');
-
-		global $action, $hookmanager;
-		$hookmanager->initHooks(array($this->element.'dao'));
-		$parameters = array('id'=>$this->id, 'getnomurl' => &$result);
-		$reshook = $hookmanager->executeHooks('getNomUrl', $parameters, $this, $action); // Note that $action and $object may have been modified by some hooks
-		if ($reshook > 0) {
-			$result = $hookmanager->resPrint;
-		} else {
-			$result .= $hookmanager->resPrint;
-		}
-
-		return $result;
-	}
-//
-//	/**
-//	 *	Return a thumb for kanban views
-//	 *
-//	 *	@param      string	    $option                 Where point the link (0=> main card, 1,2 => shipment, 'nolink'=>No link)
-//	 *  @param		array		$arraydata				Array of data
-//	 *  @return		string								HTML Code for Kanban thumb.
-//	 */
-//	public function getKanbanView($option = '', $arraydata = null)
-//	{
-//		global $conf, $langs;
-//
-//		$selected = (empty($arraydata['selected']) ? 0 : $arraydata['selected']);
-//
-//		$return = '<div class="box-flex-item box-flex-grow-zero">';
-//		$return .= '<div class="info-box info-box-sm">';
-//		$return .= '<span class="info-box-icon bg-infobox-action">';
-//		$return .= img_picto('', $this->picto);
-//		$return .= '</span>';
-//		$return .= '<div class="info-box-content">';
-//		$return .= '<span class="info-box-ref valignmiddle">'.(method_exists($this, 'getNomUrl') ? $this->getNomUrl() : $this->ref).'</span>';
-//		$return .= '<input id="cb'.$this->id.'" class="flat checkforselect fright" type="checkbox" name="toselect[]" value="'.$this->id.'"'.($selected ? ' checked="checked"' : '').'>';
-//		if (property_exists($this, 'label')) {
-//			$return .= ' <div class="inline-block opacitymedium valignmiddle tdoverflowmax100">'.$this->label.'</div>';
-//		}
-//		if (property_exists($this, 'amount')) {
-//			$return .= '<br>';
-//			$return .= '<span class="info-box-label amount">'.price($this->amount, 0, $langs, 1, -1, -1, $conf->currency).'</span>';
-//		}
-//		if (method_exists($this, 'getLibStatut')) {
-//			$return .= '<br><div class="info-box-status margintoponly">'.$this->getLibStatut(3).'</div>';
-//		}
-//		$return .= '</div>';
-//		$return .= '</div>';
-//		$return .= '</div>';
-//
-//		return $return;
-//	}
-//
-//	/**
-//	 *  Return the label of the status
-//	 *
-//	 *  @param  int		$mode          0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto, 6=Long label + Picto
-//	 *  @return	string 			       Label of status
-//	 */
-//	public function getLabelStatus($mode = 0)
-//	{
-//		return $this->LibStatut($this->status, $mode);
-//	}
-//
-//	/**
-//	 *  Return the label of the status
-//	 *
-//	 *  @param  int		$mode          0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto, 6=Long label + Picto
-//	 *  @return	string 			       Label of status
-//	 */
-//	public function getLibStatut($mode = 0)
-//	{
-//		return $this->LibStatut($this->status, $mode);
-//	}
-//
-//	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps
-//	/**
-//	 *  Return the status
-//	 *
-//	 *  @param	int		$status        Id status
-//	 *  @param  int		$mode          0=long label, 1=short label, 2=Picto + short label, 3=Picto, 4=Picto + long label, 5=Short label + Picto, 6=Long label + Picto
-//	 *  @return string 			       Label of status
-//	 */
-//	public function LibStatut($status, $mode = 0)
-//	{
-//		// phpcs:enable
-//		if (empty($this->labelStatus) || empty($this->labelStatusShort)) {
-//			global $langs;
-//			//$langs->load("procedure@procedure");
-//			$this->labelStatus[self::STATUS_DRAFT] = $langs->transnoentitiesnoconv('Draft');
-//			$this->labelStatus[self::STATUS_VALIDATED] = $langs->transnoentitiesnoconv('Enabled');
-//			$this->labelStatus[self::STATUS_CANCELED] = $langs->transnoentitiesnoconv('Disabled');
-//			$this->labelStatusShort[self::STATUS_DRAFT] = $langs->transnoentitiesnoconv('Draft');
-//			$this->labelStatusShort[self::STATUS_VALIDATED] = $langs->transnoentitiesnoconv('Enabled');
-//			$this->labelStatusShort[self::STATUS_CANCELED] = $langs->transnoentitiesnoconv('Disabled');
-//		}
-//
-//		$statusType = 'status'.$status;
-//		//if ($status == self::STATUS_VALIDATED) $statusType = 'status1';
-//		if ($status == self::STATUS_CANCELED) {
-//			$statusType = 'status6';
-//		}
-//
-//		return dolGetStatus($this->labelStatus[$status], $this->labelStatusShort[$status], '', $statusType, $mode);
-//	}
 
 	/**
 	 *	Load the info information in the object
@@ -959,192 +417,107 @@ class ProcedureTemplateStep extends CommonObject
 			dol_print_error($this->db);
 		}
 	}
-//
-//	/**
-//	 * Initialise object with example values
-//	 * Id must be 0 if object instance is a specimen
-//	 *
-//	 * @return void
-//	 */
-//	public function initAsSpecimen()
-//	{
-//		// Set here init that are not commonf fields
-//		// $this->property1 = ...
-//		// $this->property2 = ...
-//
-//		$this->initAsSpecimenCommon();
-//	}
-//
-//	/**
-//	 * 	Create an array of lines
-//	 *
-//	 * 	@return array|int		array of lines if OK, <0 if KO
-//	 */
-//	public function getLinesArray()
-//	{
-//		$this->lines = array();
-//
-//		$objectline = new ProcedureTemplateStepLine($this->db);
-//		$result = $objectline->fetchAll('ASC', 'position', 0, 0, array('customsql'=>'fk_proceduretemplatestep = '.((int) $this->id)));
-//
-//		if (is_numeric($result)) {
-//			$this->error = $objectline->error;
-//			$this->errors = $objectline->errors;
-//			return $result;
-//		} else {
-//			$this->lines = $result;
-//			return $this->lines;
-//		}
-//	}
-//
-//	/**
-//	 *  Returns the reference to the following non used object depending on the active numbering module.
-//	 *
-//	 *  @return string      		Object free reference
-//	 */
-//	public function getNextNumRef()
-//	{
-//		global $langs, $conf;
-//		$langs->load("procedure@procedure");
-//
-//		if (empty($conf->global->PROCEDURE_PROCEDURETEMPLATESTEP_ADDON)) {
-//			$conf->global->PROCEDURE_PROCEDURETEMPLATESTEP_ADDON = 'mod_proceduretemplatestep_standard';
-//		}
-//
-//		if (!empty($conf->global->PROCEDURE_PROCEDURETEMPLATESTEP_ADDON)) {
-//			$mybool = false;
-//
-//			$file = $conf->global->PROCEDURE_PROCEDURETEMPLATESTEP_ADDON.".php";
-//			$classname = $conf->global->PROCEDURE_PROCEDURETEMPLATESTEP_ADDON;
-//
-//			// Include file with class
-//			$dirmodels = array_merge(array('/'), (array) $conf->modules_parts['models']);
-//			foreach ($dirmodels as $reldir) {
-//				$dir = dol_buildpath($reldir."core/modules/procedure/");
-//
-//				// Load file with numbering class (if found)
-//				$mybool |= @include_once $dir.$file;
-//			}
-//
-//			if ($mybool === false) {
-//				dol_print_error('', "Failed to include file ".$file);
-//				return '';
-//			}
-//
-//			if (class_exists($classname)) {
-//				$obj = new $classname();
-//				$numref = $obj->getNextValue($this);
-//
-//				if ($numref != '' && $numref != '-1') {
-//					return $numref;
-//				} else {
-//					$this->error = $obj->error;
-//					//dol_print_error($this->db,get_class($this)."::getNextNumRef ".$obj->error);
-//					return "";
-//				}
-//			} else {
-//				print $langs->trans("Error")." ".$langs->trans("ClassNotFound").' '.$classname;
-//				return "";
-//			}
-//		} else {
-//			print $langs->trans("ErrorNumberingModuleNotSetup", $this->element);
-//			return "";
-//		}
-//	}
-//
-//	/**
-//	 *  Create a document onto disk according to template module.
-//	 *
-//	 *  @param	    string		$modele			Force template to use ('' to not force)
-//	 *  @param		Translate	$outputlangs	objet lang a utiliser pour traduction
-//	 *  @param      int			$hidedetails    Hide details of lines
-//	 *  @param      int			$hidedesc       Hide description
-//	 *  @param      int			$hideref        Hide ref
-//	 *  @param      null|array  $moreparams     Array to provide more information
-//	 *  @return     int         				0 if KO, 1 if OK
-//	 */
-//	public function generateDocument($modele, $outputlangs, $hidedetails = 0, $hidedesc = 0, $hideref = 0, $moreparams = null)
-//	{
-//		global $conf, $langs;
-//
-//		$result = 0;
-//		$includedocgeneration = 0;
-//
-//		$langs->load("procedure@procedure");
-//
-//		if (!dol_strlen($modele)) {
-//			$modele = 'standard_proceduretemplatestep';
-//
-//			if (!empty($this->model_pdf)) {
-//				$modele = $this->model_pdf;
-//			} elseif (!empty($conf->global->PROCEDURETEMPLATESTEP_ADDON_PDF)) {
-//				$modele = $conf->global->PROCEDURETEMPLATESTEP_ADDON_PDF;
-//			}
-//		}
-//
-//		$modelpath = "core/modules/procedure/doc/";
-//
-//		if ($includedocgeneration && !empty($modele)) {
-//			$result = $this->commonGenerateDocument($modelpath, $modele, $outputlangs, $hidedetails, $hidedesc, $hideref, $moreparams);
-//		}
-//
-//		return $result;
-//	}
+
+
+	// TODO Ajout de la fonction fetch_source_steps pour l'ajouter dans le select du edit step
+	public function fetch_source_steps()
+	{}
+
 
 	/**
-	 * Action executed by scheduler
-	 * CAN BE A CRON TASK. In such a case, parameters come from the schedule job setup field 'Parameters'
-	 * Use public function doScheduledJob($param1, $param2, ...) to get parameters
+	 *  Output html form to select a source step
 	 *
-	 * @return	int			0 if OK, <>0 if KO (this function is used also by cron so only 0 is OK)
+	 *	@param	int   	$selected       Preselected step id
+	 *	@param  string	$htmlname       Name of field in form
+	 *  @param  string	$filter         Optionnal filters criteras (example: 's.rowid <> x')
+	 *	@param	int		$showempty		Add an empty field
+	 * 	@param	int		$showtype		Show third party type in combolist (customer, prospect or supplier)
+	 * 	@param	int		$forcecombo		Force to use combo box
+	 *  @param	array	$event			Event options. Example: array(array('method'=>'getContacts', 'url'=>dol_buildpath('/core/ajax/contacts.php',1), 'htmlname'=>'contactid', 'params'=>array('add-customer-contact'=>'disabled')))
+	 *  @param	string	$filterkey		Filter on key value
+	 *  @param	int		$outputmode		0=HTML select string, 1=Array, 2=without form tag
+	 *  @param	int		$limit			Limit number of answers
+	 *  @param	string	$morecss		More css
+	 * 	@param	bool	$multiple       add [] in the name of element and add 'multiple' attribut
+	 * 	@return	string|array			HTML string with
 	 */
-	public function doScheduledJob()
+	public function select_step_source($selected = '', $htmlname = 'fk_source_step', $filter = '', $showempty = 0, $showtype = 0, $forcecombo = 0, $event = array(), $filterkey = '', $outputmode = 0, $limit = 20, $morecss = '', $multiple = false)
 	{
-		//global $conf, $langs;
+		// phpcs:enable
+		global $conf, $user, $langs;
 
-		//$conf->global->SYSLOG_FILE = 'DOL_DATA_ROOT/dolibarr_mydedicatedlofile.log';
+		$out = '';
+		$outarray = array();
 
-		$error = 0;
-		$this->output = '';
-		$this->error = '';
+		$stepstat = new ProcedureTemplateStep($this->db);
 
-		dol_syslog(__METHOD__, LOG_DEBUG);
 
-		$now = dol_now();
+		$steps_used = $stepstat->fetchAll('ASC', 't.rowid', $limit, 0, $filter);
 
-		$this->db->begin();
+		if (!empty($selected) && !is_array($selected)) {
+			$selected = array($selected);
+		}
 
-		// ...
+		if ($outputmode != 2) {
+			$out = '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
+			$out .= '<input type="hidden" name="token" value="'.newToken().'">';
+		}
 
-		$this->db->commit();
+		if ($stepstat) {
+			// Construct $out and $outarray
+			$out .= '<select id="'.$htmlname.'" class="flat minwidth100'.($morecss ? ' '.$morecss : '').'" name="'.$htmlname.($multiple ? '[]' : '').'" '.($multiple ? 'multiple' : '').'>'."\n";
+			if ($showempty) {
+				$out .= '<option value="-1">&nbsp;</option>'."\n";
+			}
 
-		return $error;
+			$num = 0;
+			if (is_array($steps_used)) {
+				$num = count($steps_used);
+			}
+
+			$i = 0;
+
+			if ($num) {
+				while ($i < $num) {
+
+					$label = $steps_used[$i]->label;
+
+					// Test if entry is the first element of $selected.
+					if ((isset($selected[0]) && is_object($selected[0]) && $selected[0]->id == $steps_used[$i]->id) || ((!isset($selected[0]) || !is_object($selected[0])) && !empty($selected) && in_array($steps_used[$i]->id, $selected))) {
+						$out .= '<option value="'.$steps_used[$i]->id.'" selected>'.$steps_used[$i]->labelproceduretemplate. ' >> '.$label.'</option>';
+					} else {
+						$out .= '<option value="'.$steps_used[$i]->id.'">'.$steps_used[$i]->labelproceduretemplate. ' >> '.$label.'</option>';
+					}
+
+					array_push($outarray, array('key'=>$steps_used[$i]->id, 'value'=>$steps_used[$i]->id, 'label'=>$label));
+
+					$i++;
+//					if (($i % 10) == 0) {
+//						$out .= "\n";
+//					}
+				}
+			}
+			$out .= '</select>'."\n";
+
+			if (!empty($conf->use_javascript_ajax) && !empty($conf->global->RESOURCE_USE_SEARCH_TO_SELECT) && !$forcecombo) {
+				//$minLength = (is_numeric($conf->global->RESOURCE_USE_SEARCH_TO_SELECT)?$conf->global->RESOURCE_USE_SEARCH_TO_SELECT:2);
+				$out .= ajax_combobox($htmlname, $event, $conf->global->RESOURCE_USE_SEARCH_TO_SELECT);
+			} else {
+				$out .= ajax_combobox($htmlname);
+			}
+
+			if ($outputmode != 2) {
+				$out .= '<input type="submit" class="button" value="'.$langs->trans("Search").'"> &nbsp; &nbsp; ';
+
+				$out .= '</form>';
+			}
+		} else {
+			dol_print_error($this->db);
+		}
+
+		if ($outputmode && $outputmode != 2) {
+			return $outarray;
+		}
+		return $out;
 	}
 }
-
-//
-//require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
-//
-///**
-// * Class ProcedureTemplateStepLine. You can also remove this and generate a CRUD class for lines objects.
-// */
-//class ProcedureTemplateStepLine extends CommonObjectLine
-//{
-//	// To complete with content of an object ProcedureTemplateStepLine
-//	// We should have a field rowid, fk_myobject and position
-//
-//	/**
-//	 * @var int  Does object support extrafields ? 0=No, 1=Yes
-//	 */
-//	public $isextrafieldmanaged = 0;
-//
-//	/**
-//	 * Constructor
-//	 *
-//	 * @param DoliDb $db Database handler
-//	 */
-//	public function __construct(DoliDB $db)
-//	{
-//		$this->db = $db;
-//	}
-//}

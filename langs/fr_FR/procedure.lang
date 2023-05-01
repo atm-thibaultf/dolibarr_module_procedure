@@ -73,6 +73,7 @@ Re-Open=Réactiver
 Manual=Manuel
 Recurrent=Récurrent
 ProcedureTemplate=Modèle de procédure
+SourceStep=Étape(s) précédente(s)
 
 #
 # Card other tabs
@@ -81,7 +82,8 @@ ActionsOnProcedureTemplate=Évènements sur le modèle de procédure
 Steps=Étapes
 AddStep=Ajouter une étape
 StepsOnProcedureTemplate=Étapes du modèle de procédure
-NewProcedureTemplateStep=Nouvelle étape de modèle de procédure
+NewProcedureTemplateStep=Nouvelle étape
+Rank=Rang
 #
 # Permissions
 #

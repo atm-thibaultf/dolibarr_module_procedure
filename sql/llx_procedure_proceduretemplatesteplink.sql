@@ -14,18 +14,9 @@
 -- along with this program.  If not, see https://www.gnu.org/licenses/.
 
 
-CREATE TABLE IF NOT EXISTS llx_procedure_template_step(
-	-- BEGIN MODULEBUILDER FIELDS
-	rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL, 
-	fk_proceduretemplate integer NOT NULL,
-	rank integer DEFAULT 1 NOT NULL, 
-	label varchar(255), 
-	description text, 
-	date_creation datetime NOT NULL, 
-	tms timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
-	fk_user_creat integer NOT NULL, 
-	fk_user_modif integer,
-	status integer NOT NULL,
-	import_key varchar(14)
-	-- END MODULEBUILDER FIELDS
+CREATE TABLE IF NOT EXISTS llx_procedure_template_step_link(
+    rowid integer AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    fk_source_step integer NOT NULL,
+    fk_step integer NOT NULL
+    -- validate_condition text
 ) ENGINE=innodb;
