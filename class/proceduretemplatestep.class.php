@@ -189,47 +189,18 @@ class ProcedureTemplateStep extends CommonObject
 	 */
 	public function create(User $user, $notrigger = false)
 	{
+
 		$resultcreate = $this->createCommon($user, $notrigger);
-		//$resultvalidate = $this->validate($user, $notrigger);
 
-		// if source steps exist
+		// if source steps exist we save them in database
 		if ($resultcreate && !empty($this->step_source)) {
-
-			$this->db->begin();
-
-			if (!$error) {
-				foreach ($this->step_source AS $key => $value) {
-
-					$sql = "INSERT INTO " . $this->db->prefix() . 'procedure_template_step_link';
-					$sql .= " (fk_source_step, fk_step)";
-					$sql .= " VALUES (" . $value . ", " . $this->id . ");";
-					$res = $this->db->query($sql);
-				}
-				if (!$res) {
-					$error++;
-					$this->errors[] = $this->db->lasterror();
-				}
-			}
-
-			// Commit or rollback
-			if ($error) {
-				$this->db->rollback();
-				$error++;
-				// Creation KO
-				if (!empty($this->errors)) {
-					setEventMessages(null, $this->errors, 'errors');
-				} else {
-					setEventMessages($this->error, null, 'errors');
-				}
-				$action = 'create';
-			}
+			$this->create_source_step($user, $this->id);
 		}
 
 		$this->db->commit();
 
 		return $resultcreate;
 	}
-
 
 	/**
 	 * Load object in memory from the database
@@ -339,7 +310,16 @@ class ProcedureTemplateStep extends CommonObject
 	 */
 	public function update(User $user, $notrigger = false)
 	{
-		return $this->updateCommon($user, $notrigger);
+		$resultupdate = $this->updateCommon($user, $notrigger);
+
+		// if source steps exist we save them in database
+		if ($resultupdate && !empty($this->step_source)) {
+			$this->delete_source_step($user, $this->id);
+			$this->create_source_step($user, $this->id);
+		}
+
+		return $resultupdate;
+
 	}
 
 	/**
@@ -418,11 +398,62 @@ class ProcedureTemplateStep extends CommonObject
 		}
 	}
 
+	// SOURCE STEPS ------------------------------------------------------------------------------------------------------------------------------
 
-	// TODO Ajout de la fonction fetch_source_steps pour l'ajouter dans le select du edit step
-	public function fetch_source_steps()
-	{}
+	/**
+	 * Load source steps from the database
+	 *
+	 * @param int    $id   Id of step
+	 * @return array|int	int <0 if KO, array of source steps if OK
+	 */
+	public function fetch_source_steps($id)
+	{
+		// if source steps exist we save them in database
+		if ($id) {
 
+			$this->db->begin();
+
+			if (!$error) {
+				$sql = "SELECT fk_source_step";
+				$sql .= " FROM ".MAIN_DB_PREFIX."procedure_template_step_link as t";
+				$sql .= " WHERE t.fk_step = ".((int) $id);
+				$resql = $this->db->query($sql);
+
+				if ($resql) {
+
+					$num = $this->db->num_rows($resql);
+					$source_step = $resql->fetch_all();
+					$i = 0;
+
+					while ($i < $num) {
+						$records[$i] = $source_step[$i][0];
+						$i++;
+					}
+
+					$this->db->free($resql);
+
+					return $records;
+
+				} else {
+					$this->errors[] = 'Error '.$this->db->lasterror();
+					dol_syslog(__METHOD__.' '.join(',', $this->errors), LOG_ERR);
+					return -1;
+				}
+			} else {
+				$this->db->rollback();
+				$error++;
+				// Creation KO
+				if (!empty($this->errors)) {
+					setEventMessages(null, $this->errors, 'errors');
+				} else {
+					setEventMessages($this->error, null, 'errors');
+				}
+			}
+		} else {
+			setEventMessages($this->error, null, 'errors');
+		}
+		return -1;
+	}
 
 	/**
 	 *  Output html form to select a source step
@@ -480,21 +511,20 @@ class ProcedureTemplateStep extends CommonObject
 			if ($num) {
 				while ($i < $num) {
 
-					$label = $steps_used[$i]->label;
+						$label = $steps_used[$i]->label;
 
-					// Test if entry is the first element of $selected.
-					if ((isset($selected[0]) && is_object($selected[0]) && $selected[0]->id == $steps_used[$i]->id) || ((!isset($selected[0]) || !is_object($selected[0])) && !empty($selected) && in_array($steps_used[$i]->id, $selected))) {
-						$out .= '<option value="'.$steps_used[$i]->id.'" selected>'.$steps_used[$i]->labelproceduretemplate. ' >> '.$label.'</option>';
-					} else {
-						$out .= '<option value="'.$steps_used[$i]->id.'">'.$steps_used[$i]->labelproceduretemplate. ' >> '.$label.'</option>';
-					}
+						// Test if entry is the first element of $selected.
+						if ((isset($selected[0]) && is_object($selected[0]) && $selected[0]->id == $steps_used[$i]->id) || ((!isset($selected[0]) || !is_object($selected[0])) && !empty($selected) && in_array($steps_used[$i]->id, $selected))) {
+							$out .= '<option value="' . $steps_used[$i]->id . '" selected>' . $steps_used[$i]->labelproceduretemplate . ' >> ' . $label . '</option>';
+						} else {
+							if ($steps_used[$i]->id != $this->id) {
+								$out .= '<option value="' . $steps_used[$i]->id . '">' . $steps_used[$i]->labelproceduretemplate . ' >> ' . $label . '</option>';
+							}
+						}
 
-					array_push($outarray, array('key'=>$steps_used[$i]->id, 'value'=>$steps_used[$i]->id, 'label'=>$label));
+						array_push($outarray, array('key' => $steps_used[$i]->id, 'value' => $steps_used[$i]->id, 'label' => $label));
 
-					$i++;
-//					if (($i % 10) == 0) {
-//						$out .= "\n";
-//					}
+						$i++;
 				}
 			}
 			$out .= '</select>'."\n";
@@ -520,4 +550,85 @@ class ProcedureTemplateStep extends CommonObject
 		}
 		return $out;
 	}
+
+	/**
+	 * Create source steps into database
+	 *
+	 * @param  User $user      User that creates
+	 * @param  Id $id		   Id of the step to delete source steps from
+	 * @return int             <0 if KO, Id of created object if OK
+	 */
+	public function create_source_step(User $user, $id)
+	{
+		$error = 0;
+
+		$this->db->begin();
+
+		if (!$error) {
+			foreach ($this->step_source AS $key => $value) {
+				$sql = "INSERT INTO " . $this->db->prefix() . 'procedure_template_step_link';
+				$sql .= " (fk_source_step, fk_step)";
+				$sql .= " VALUES (" . $value . ", " . $this->id . ");";
+				$res = $this->db->query($sql);
+			}
+			if (!$res) {
+				$error++;
+				$this->errors[] = $this->db->lasterror();
+			}
+		}
+
+		// Commit or rollback
+		if ($error) {
+			$this->db->rollback();
+			$error++;
+			// Creation KO
+			if (!empty($this->errors)) {
+				setEventMessages(null, $this->errors, 'errors');
+				return -1;
+			} else {
+				setEventMessages($this->error, null, 'errors');
+				return -1;
+			}
+			$action = 'create';
+		}
+
+		$this->db->commit();
+
+		return 1;
+	}
+
+	/**
+	 * Delete source steps of a step in database
+	 *
+	 * @param User $user       User that deletes
+	 * @param Id $id			Id of the step to delete source steps from
+	 * @return int             <0 if KO, >0 if OK
+	 */
+	public function delete_source_step(User $user, $id)
+	{
+		$error = 0;
+
+		$this->db->begin();
+
+		if (!$error) {
+			$sql = 'DELETE FROM '.$this->db->prefix().'procedure_template_step_link WHERE fk_step='.((int) $this->id);
+
+			$resql = $this->db->query($sql);
+			if (!$resql) {
+				$error++;
+				$this->errors[] = $this->db->lasterror();
+			}
+		}
+
+		// Commit or rollback
+		if ($error) {
+			$this->db->rollback();
+			return -1;
+		} else {
+			$this->db->commit();
+			return 1;
+		}
+	}
+
+
 }

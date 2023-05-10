@@ -150,6 +150,7 @@ if (!$permissiontoread) {
 	accessforbidden();
 }
 
+
 /*
  * Actions
  */
@@ -170,18 +171,14 @@ if (empty($reshook)) {
 	// Actions cancel, add, update, update_extras, confirm_validate, confirm_delete, confirm_deleteline, confirm_clone, confirm_close, confirm_setdraft, confirm_reopen
 	include DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
 
+
+
 	// Actions when linking object each other
 	// include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';
 
 	// Action to move up and down lines of object
 	// include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php';
 }
-
-//if ($action == 'add' && $fk_proceduretemplate) {
-//	$urltogo = ;
-//	header("Location: " . $urltogo);
-//	exit;
-//}
 
 /*
  * View --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -324,7 +321,7 @@ if (($id || $ref) && $action == 'edit') {
 	print $langs->trans('SourceStep');
 	print '</td>';
 	print '<td>';
-	print $object->select_step_source($object->step_source, 'fk_step_source', '', 0, 0, '', '', $object->entity, 2, 0, 'quatrevingtpercent widthcentpercentminusx', true);
+	print $object->select_step_source($object->fetch_source_steps($object->id), 'fk_step_source', '', 0, 0, '', '', $object->entity, 2, 0, 'quatrevingtpercent widthcentpercentminusx', true);
 	print '</td></tr>';
 
 	print '</table>';

@@ -373,14 +373,12 @@ $parameters = array();
 $reshook = $hookmanager->executeHooks('printFieldListSelect', $parameters, $step, $action); // Note that $action and $object may have been modified by hook
 $sql .= $hookmanager->resPrint;
 $sql = preg_replace('/,\s*$/', '', $sql);
-$sql .= ", ptsl.fk_source_step as fk_source_step";
 //$sql .= ", COUNT(rc.rowid) as anotherfield";
 
 $sqlfields = $sql; // $sql fields to remove for count total
 
 $sql .= " FROM ".MAIN_DB_PREFIX.$step->table_element." as t";
 $sql .= " LEFT JOIN ".MAIN_DB_PREFIX.$object->table_element." as pt on (t.fk_proceduretemplate = pt.rowid)";
-$sql .= " LEFT JOIN ".MAIN_DB_PREFIX. "procedure_template_step_link as ptsl on (t.rowid = ptsl.fk_step)";
 //$sql .= " LEFT JOIN ".MAIN_DB_PREFIX."anothertable as rc ON rc.parent = t.rowid";
 if (isset($extrafields->attributes[$step->table_element]['label']) && is_array($extrafields->attributes[$step->table_element]['label']) && count($extrafields->attributes[$step->table_element]['label'])) {
 	$sql .= " LEFT JOIN ".MAIN_DB_PREFIX.$step->table_element."_extrafields as ef on (t.rowid = ef.fk_object)";
