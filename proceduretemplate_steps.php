@@ -776,16 +776,6 @@ while ($i < $imaxinloop) {
 	// Store properties in $object
 	$step->setVarsFromFetchObj($obj);
 
-	// TODO
-	//Add fk_source_step in object properties
-	$source_step = array();
-	$source_step["type"] = "integer";
-	$source_step["label"] = "SourceStep";
-	$source_step["enabled"] = "1";
-    $source_step["position"] = "150";
-	$source_step["visible"] = "1";
-	$step->fields['fk_source_step'] = $source_step;
-
 	// Show here line of result
 	$j = 0;
 	print '<tr data-rowid="'.$step->id.'" class="oddeven">';

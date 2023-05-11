@@ -111,7 +111,7 @@ class ProcedureTemplateStep extends CommonObject
 		'rank' => array('type'=>'integer', 'label'=>'Rank', 'enabled'=>'1', 'position'=>20, 'notnull'=>1, 'visible'=>5, 'noteditable'=>'1', 'default'=>'1', 'index'=>1, 'css'=>'left', 'csslist'=>'left', 'searchall'=>1, 'validate'=>'1', 'comment'=>"Rank of object"),
 		'label' => array('type'=>'varchar(255)', 'label'=>'Label', 'enabled'=>'1', 'position'=>30, 'notnull'=>0, 'visible'=>1, 'alwayseditable'=>'0', 'searchall'=>1, 'cssview'=>'wordbreak', 'help'=>"Help text", 'showoncombobox'=>'2', 'validate'=>'1',),
 		'description' => array('type'=>'html', 'label'=>'Description', 'enabled'=>'1', 'position'=>60, 'notnull'=>0, 'visible'=>1, 'validate'=>'1', 'csslist'=>'minwidth300 widthcentpercentminusx',),
-		'fk_proceduretemplate' => array('type'=>'integer:ProcedureTemplate:procedure/class/proceduretemplate.class.php', 'label'=>'ProcedureTemplate', 'enabled'=>'1', 'position'=>50, 'notnull'=>1, 'visible'=>3, 'noteditable'=>0, 'index'=>1, 'css'=>'maxwidth500 widthcentpercentminusxx', 'csslist'=>'tdoverflowmax150',),
+		'fk_proceduretemplate' => array('type'=>'integer:ProcedureTemplate:procedure/class/proceduretemplate.class.php', 'label'=>'ProcedureTemplate', 'enabled'=>'1', 'position'=>50, 'notnull'=>1, 'visible'=>3, 'noteditable'=>1, 'index'=>1, 'css'=>'maxwidth500 widthcentpercentminusxx', 'csslist'=>'tdoverflowmax150',),
 		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2,),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>0, 'visible'=>-2,),
 		'fk_user_creat' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserAuthor', 'picto'=>'user', 'enabled'=>'1', 'position'=>510, 'notnull'=>1, 'visible'=>-2, 'foreignkey'=>'user.rowid', 'csslist'=>'tdoverflowmax150',),
@@ -331,8 +331,17 @@ class ProcedureTemplateStep extends CommonObject
 	 */
 	public function delete(User $user, $notrigger = false)
 	{
-		return $this->deleteCommon($user, $notrigger);
-		//return $this->deleteCommon($user, $notrigger, 1);
+
+		$step_id = $this->id; // We save the id because it will be deleted
+
+		$resultdelete = $this->deleteCommon($user, $notrigger);
+
+		// if source steps exist we delete them from the database
+		if ($resultdelete) {
+			$this->delete_source_step($user, $step_id);
+		}
+
+		return $resultdelete;
 	}
 
 	/**
@@ -408,7 +417,8 @@ class ProcedureTemplateStep extends CommonObject
 	 */
 	public function fetch_source_steps($id)
 	{
-		// if source steps exist we save them in database
+		$error = 0;
+
 		if ($id) {
 
 			$this->db->begin();
@@ -597,6 +607,7 @@ class ProcedureTemplateStep extends CommonObject
 		return 1;
 	}
 
+	//TODO modifier cette fonction pour en faire une delete_all_link pour supprimer tous les liens d'une steps (qu'elle soit source ou step dans la table step_link)
 	/**
 	 * Delete source steps of a step in database
 	 *
@@ -629,6 +640,5 @@ class ProcedureTemplateStep extends CommonObject
 			return 1;
 		}
 	}
-
 
 }

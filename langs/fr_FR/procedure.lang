@@ -84,6 +84,8 @@ AddStep=Ajouter une étape
 StepsOnProcedureTemplate=Étapes du modèle de procédure
 NewProcedureTemplateStep=Nouvelle étape
 Rank=Rang
+DeleteStepLine=Supprimer une étape
+ConfirmDeleteStepLine=Attention, tous les liens de cette étape seront également supprimés. Êtes-vous sûr de vouloir supprimer cette étape ?
 #
 # Permissions
 #

@@ -25,6 +25,7 @@
 
 // Put here all includes required by your class file
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+dol_include_once('/procedure/class/proceduretemplatestep.class.php');
 //require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
 //require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
 
@@ -377,18 +378,18 @@ class ProcedureTemplate extends CommonObject
 		return $result;
 	}
 
-	/**
-	 * Load object lines in memory from the database
-	 *
-	 * @return int         <0 if KO, 0 if not found, >0 if OK
-	 */
-	public function fetchLines()
-	{
-		$this->lines = array();
-
-		$result = $this->fetchLinesCommon();
-		return $result;
-	}
+//	/**
+//	 * Load object lines in memory from the database
+//	 *
+//	 * @return int         <0 if KO, 0 if not found, >0 if OK
+//	 */
+//	public function fetchLines()
+//	{
+//		$this->lines = array();
+//
+//		$result = $this->fetchLinesCommon();
+//		return $result;
+//	}
 
 
 	/**
@@ -492,27 +493,41 @@ class ProcedureTemplate extends CommonObject
 	 */
 	public function delete(User $user, $notrigger = false)
 	{
-		return $this->deleteCommon($user, $notrigger);
-		//return $this->deleteCommon($user, $notrigger, 1);
-	}
 
-	/**
-	 *  Delete a line of object in database
-	 *
-	 *	@param  User	$user       User that delete
-	 *  @param	int		$idline		Id of line to delete
-	 *  @param 	bool 	$notrigger  false=launch triggers after, true=disable triggers
-	 *  @return int         		>0 if OK, <0 if KO
-	 */
-	public function deleteLine(User $user, $idline, $notrigger = false)
-	{
-		if ($this->status < 0) {
-			$this->error = 'ErrorDeleteLineNotAllowedByObjectStatus';
-			return -2;
+		$procedure_template_id = $this->id; // We save the id because it will be deleted
+		$step = new ProcedureTemplateStep($this->db);
+		$steps_to_delete = $step->fetchAll('','','','', array('fk_proceduretemplate'=>$this->id), 'AND');
+
+		$resultdelete = $this->deleteCommon($user, $notrigger);
+		//return $this->deleteCommon($user, $notrigger, 1);
+
+		// if steps exist we delete them from the database
+		if ($steps_to_delete) {
+			foreach ($steps_to_delete AS $step_to_delete) {
+				$step_to_delete->delete($user);
+			}
 		}
 
-		return $this->deleteLineCommon($user, $idline, $notrigger);
+		return $resultdelete;
 	}
+
+//	/**
+//	 *  Delete a line of object in database
+//	 *
+//	 *	@param  User	$user       User that delete
+//	 *  @param	int		$idline		Id of line to delete
+//	 *  @param 	bool 	$notrigger  false=launch triggers after, true=disable triggers
+//	 *  @return int         		>0 if OK, <0 if KO
+//	 */
+//	public function deleteLine(User $user, $idline, $notrigger = false)
+//	{
+//		if ($this->status < 0) {
+//			$this->error = 'ErrorDeleteLineNotAllowedByObjectStatus';
+//			return -2;
+//		}
+//
+//		return $this->deleteLineCommon($user, $idline, $notrigger);
+//	}
 
 
 	/**
@@ -1191,4 +1206,63 @@ class ProcedureTemplateLine extends CommonObjectLine
 	{
 		$this->db = $db;
 	}
+
+// Steps ---------------------------------------------------------------------------------------
+
+//	/**
+//	 * Load steps from the database
+//	 *
+//	 * @param int    $id   Id of step
+//	 * @return array|int	int <0 if KO, array of source steps if OK
+//	 */
+//	public function fetch_steps($id)
+//	{
+//		$error = 0;
+//
+//		if ($id) {
+//
+//			$this->db->begin();
+//
+//			if (!$error) {
+//				$sql = "SELECT t.rowid";
+//				$sql .= " FROM ".MAIN_DB_PREFIX."procedure_template_step as t";
+//				$sql .= " WHERE t.fk_procedure_template = ".((int) $id);
+//				$resql = $this->db->query($sql);
+//
+//				if ($resql) {
+//
+//					$num = $this->db->num_rows($resql);
+//					$steps = $resql->fetchAll();
+//					$i = 0;
+//
+//					while ($i < $num) {
+//						$records[$i] = $steps[$i][0];
+//						$i++;
+//					}
+//
+//					$this->db->free($resql);
+//
+//					return $records;
+//
+//				} else {
+//					$this->errors[] = 'Error '.$this->db->lasterror();
+//					dol_syslog(__METHOD__.' '.join(',', $this->errors), LOG_ERR);
+//					return -1;
+//				}
+//			} else {
+//				$this->db->rollback();
+//				$error++;
+//				// Creation KO
+//				if (!empty($this->errors)) {
+//					setEventMessages(null, $this->errors, 'errors');
+//				} else {
+//					setEventMessages($this->error, null, 'errors');
+//				}
+//			}
+//		} else {
+//			setEventMessages($this->error, null, 'errors');
+//		}
+//		return -1;
+//	}
+
 }
