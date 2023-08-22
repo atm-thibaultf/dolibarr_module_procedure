@@ -44,16 +44,16 @@ function procedureAdminPrepareHead()
 	$head[$h][2] = 'settings';
 	$h++;
 
-	/*
-	$head[$h][0] = dol_buildpath("/procedure/admin/myobject_extrafields.php", 1);
-	$head[$h][1] = $langs->trans("ExtraFields");
-	$nbExtrafields = is_countable($extrafields->attributes['myobject']['label']) ? count($extrafields->attributes['myobject']['label']) : 0;
+
+	$head[$h][0] = dol_buildpath("/procedure/admin/proceduretemplate_extrafields.php", 1);
+	$head[$h][1] = $langs->trans("ExtraFieldsProcedureTemplate");
+	$nbExtrafields = is_countable($extrafields->attributes['proceduretemplate']['label']) ? count($extrafields->attributes['proceduretemplate']['label']) : 0;
 	if ($nbExtrafields > 0) {
 		$head[$h][1] .= ' <span class="badge">' . $nbExtrafields . '</span>';
 	}
-	$head[$h][2] = 'myobject_extrafields';
+	$head[$h][2] = 'proceduretemplate_extrafields';
 	$h++;
-	*/
+
 
 	$head[$h][0] = dol_buildpath("/procedure/admin/about.php", 1);
 	$head[$h][1] = $langs->trans("About");

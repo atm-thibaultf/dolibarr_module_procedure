@@ -28,10 +28,12 @@ ModuleProcedureDesc = Module de gestion des procédures
 ProcedureSetup = Configuration du module Procedure
 Settings = Paramètres
 ProcedureSetupPage = Configuration du module Procedure
+ExtraFieldsProcedureTemplate = Attributs supplémentaires (Modèle de procédure)
 PROCEDURE_MYPARAM1 = My param 1
 PROCEDURE_MYPARAM1Tooltip = My param 1 tooltip
 PROCEDURE_MYPARAM2=My param 2
 PROCEDURE_MYPARAM2Tooltip=My param 2 tooltip
+
 
 
 #
