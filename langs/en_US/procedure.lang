@@ -28,6 +28,7 @@ ModuleProcedureDesc = Procedure description
 ProcedureSetup = Procedure setup
 Settings = Settings
 ProcedureSetupPage = Procedure setup page
+ExtraFieldsProcedureTemplate = Extrafields (Procedure Template)
 PROCEDURE_MYPARAM1 = My param 1
 PROCEDURE_MYPARAM1Tooltip = My param 1 tooltip
 PROCEDURE_MYPARAM2=My param 2

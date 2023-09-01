@@ -21,9 +21,9 @@
  */
 
 /**
- *      \file       admin/myobject_extrafields.php
+ *      \file       admin/proceduretemplate_extrafields.php
  *		\ingroup    procedure
- *		\brief      Page to setup extra fields of myobject
+ *		\brief      Page to setup extra fields of proceduretemplate
  */
 
 // Load Dolibarr environment
@@ -72,7 +72,7 @@ foreach ($tmptype2label as $key => $val) {
 
 $action = GETPOST('action', 'aZ09');
 $attrname = GETPOST('attrname', 'alpha');
-$elementtype = 'procedure_myobject'; //Must be the $table_element of the class that manage extrafield
+$elementtype = 'procedure_template'; //Must be the $table_element of the class that manage extrafield
 
 if (!$user->admin) {
 	accessforbidden();
@@ -105,7 +105,7 @@ print load_fiche_titre($langs->trans($page_name), $linkback, 'title_setup');
 
 $head = procedureAdminPrepareHead();
 
-print dol_get_fiche_head($head, 'myobject_extrafields', $langs->trans($page_name), -1, 'procedure@procedure');
+print dol_get_fiche_head($head, 'proceduretemplate_extrafields', $langs->trans($page_name), -1, 'procedure@procedure');
 
 require DOL_DOCUMENT_ROOT.'/core/tpl/admin_extrafields_view.tpl.php';
 
